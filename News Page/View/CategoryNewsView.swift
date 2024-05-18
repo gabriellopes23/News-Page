@@ -2,16 +2,30 @@
 import SwiftUI
 
 struct CategoriesView: View {
-    let categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
+    let categories = ["business", "entertainment", "general", "health", "sports", "technology", "economy", "policy", "psychology", "cars"]
+    @StateObject var newsPageVM: NewsPageViewModel = NewsPageViewModel()
+    @StateObject var savedNewsVM: SavedNewsViewModel = SavedNewsViewModel()
     
     var body: some View {
-        NavigationView {
-            List(categories, id: \.self) { category in
-                NavigationLink(destination: CategoryNewsView(category: category)) {
-                    Text(category.capitalized)
+        ScrollView {
+            NavigationView {
+                VStack {
+                    
+                    NewsListView(newsPageVM: newsPageVM)
+                        .environmentObject(savedNewsVM)
+                    
+                    
+                    List(categories, id: \.self) { category in
+                        NavigationLink(destination: CategoryNewsView(category: category)) {
+                            Text(category.capitalized)
+                        }
+                    }
+                    .navigationTitle("Explore Categories")
+                }
+                .onAppear {
+                    newsPageVM.getNews(query: "latest")
                 }
             }
-            .navigationTitle("Explore Categories")
         }
     }
 }
@@ -22,20 +36,20 @@ struct CategoryNewsView: View {
     
     var body: some View {
         VStack {
-                   List(newsPageVM.newsPageMode.articles) { article in
-                       NewsRowView(
-                        newsPageVM: newsPageVM,
-                        title: article.title ?? "",
-                        description: article.description ?? "",
-                        imageUrl: article.urlToImage,
-                        category: article.source.name ?? "",
-                        date: article.publishedAt)
-                   }
-               }
-               .onAppear {
-                   newsPageVM.getNewsByCategory(category: category)
-               }
-               .navigationTitle(category.capitalized)
+            List(newsPageVM.newsPageMode.articles) { article in
+                NewsRowView(
+                    newsPageVM: newsPageVM,
+                    title: article.title ?? "",
+                    description: article.description ?? "",
+                    imageUrl: article.urlToImage,
+                    category: article.source.name ?? "",
+                    date: article.publishedAt)
+            }
+        }
+        .onAppear {
+            newsPageVM.getNewsByCategory(category: category)
+        }
+        .navigationTitle(category.capitalized)
     }
 }
 

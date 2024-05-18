@@ -1,17 +1,51 @@
-//
-//  SearchView.swift
-//  News Page
-//
-//  Created by Gabriel Lopes on 16/05/24.
-//
 
 import SwiftUI
 
 struct SearchView: View {
+    @State var newsPageVM: NewsPageViewModel = NewsPageViewModel()
+    @State var searchText = ""
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            HStack {
+                TextField("Search for news", text: $searchText, onCommit: {
+                    newsPageVM.getNews(query: searchText)
+                })
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.red)
+            }
+            .padding(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(lineWidth: 1)
+            )
+        }
+        .padding()
     }
 }
+
+struct SearchCategory: View {
+    @State var newsPageVM: NewsPageViewModel = NewsPageViewModel()
+    @State var searchText = ""
+    var body: some View {
+        HStack {
+            HStack {
+                TextField("Search for Category", text: $searchText, onCommit: {
+                    newsPageVM.getNewsByCategory(category: searchText)
+                })
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.red)
+            }
+            .padding(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(lineWidth: 1)
+            )
+        }
+        .padding()
+    }
+}
+
+
 
 #Preview {
     SearchView()
